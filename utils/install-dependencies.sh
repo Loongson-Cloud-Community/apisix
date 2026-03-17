@@ -44,8 +44,8 @@ function install_dependencies_with_aur() {
 
 # Install dependencies on centos and fedora
 function install_dependencies_with_yum() {
-    sudo yum install -y yum-utils
-    sudo yum-config-manager --add-repo "https://openresty.org/package/${1}/openresty.repo"
+    sudo yum install -y dnf-plugins-core
+#    sudo yum-config-manager --add-repo "https://openresty.org/package/${1}/openresty.repo"
     if [[ "${1}" == "centos" ]]; then
         sudo yum -y install centos-release-scl
         sudo yum -y install devtoolset-9 patch wget
@@ -54,9 +54,10 @@ function install_dependencies_with_yum() {
         set -eu
     fi
     sudo yum install -y  \
-        gcc gcc-c++ curl wget unzip xz gnupg perl-ExtUtils-Embed cpanminus patch \
-        perl perl-devel pcre pcre-devel openldap-devel \
-        openresty-zlib-devel openresty-pcre-devel
+        gcc gcc-c++ curl wget unzip xz gnupg perl-ExtUtils-Embed patch \
+        perl perl-devel pcre pcre-devel openldap-devel perl-App-cpanminus 
+#	    \
+#        openresty-zlib-devel openresty-pcre-devel
 }
 
 # Install dependencies on ubuntu and debian
@@ -85,6 +86,8 @@ function install_dependencies_with_apt() {
 function multi_distro_installation() {
     if grep -Eqi "CentOS" /etc/issue || grep -Eq "CentOS" /etc/*-release; then
         install_dependencies_with_yum "centos"
+    elif grep -Eqi "openEuler" /etc/issue || grep -Eq "openEuler" /etc/*-release; then
+        install_dependencies_with_yum "openEuler"
     elif grep -Eqi -e "Red Hat" -e "rhel" /etc/*-release; then
         install_dependencies_with_yum "rhel"
     elif grep -Eqi "Fedora" /etc/issue || grep -Eq "Fedora" /etc/*-release; then
@@ -121,7 +124,8 @@ function multi_distro_uninstallation() {
 
 function install_apisix_runtime() {
     export runtime_version=${APISIX_RUNTIME:?}
-    wget "https://raw.githubusercontent.com/api7/apisix-build-tools/apisix-runtime/${APISIX_RUNTIME}/build-apisix-runtime.sh"
+    rm -rf build-apisix-runtime.sh
+    wget "https://raw.githubusercontent.com/Loongson-Cloud-Community/apisix-build-tools/apisix-runtime/1.2.0-loongarch/build-apisix-runtime.sh"
     chmod +x build-apisix-runtime.sh
     ./build-apisix-runtime.sh latest
     rm build-apisix-runtime.sh
