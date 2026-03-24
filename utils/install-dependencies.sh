@@ -88,6 +88,8 @@ function multi_distro_installation() {
         install_dependencies_with_yum "centos"
     elif grep -Eqi "openEuler" /etc/issue || grep -Eq "openEuler" /etc/*-release; then
         install_dependencies_with_yum "openEuler"
+    elif grep -Eqi "Anolis" /etc/issue || grep -Eq "Anolis" /etc/*-release; then
+        install_dependencies_with_yum "Anolis"
     elif grep -Eqi -e "Red Hat" -e "rhel" /etc/*-release; then
         install_dependencies_with_yum "rhel"
     elif grep -Eqi "Fedora" /etc/issue || grep -Eq "Fedora" /etc/*-release; then

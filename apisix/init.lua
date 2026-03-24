@@ -17,7 +17,7 @@
 local require         = require
 -- set the JIT options before any code, to prevent error "changing jit stack size is not
 -- allowed when some regexs have already been compiled and cached"
-if require("ffi").os == "Linux" then
+if require("ffi").os == "Linux" and require("ffi").arch ~= "loongarch64" then
     require("ngx.re").opt("jit_stack_size", 200 * 1024)
 end
 
